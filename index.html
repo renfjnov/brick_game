@@ -25,7 +25,7 @@
             let o = {
                 image : image,
                 x : 150,
-                y : 200,
+                y : 250,
                 speed : 5,
             }
 
@@ -43,22 +43,47 @@
             let o = {
                 image : image,
                 x : 150,
-                y : 200,
+                y : 100,
                 speedX : 10,
                 speedY : 10,
+                fired : false,
             }
 
             o.move = function() {
                 log('move')
-                o.x += o.speedX
-                o.y += o.speedY
-            }
+                if (o.fired) {
+                    o.x += o.speedX
+                    o.y += o.speedY
+                }
 
+            }
+            o.fire = function() {
+                o.fired = true
+            }
             o.bounceX = function() {
                 o.speedX *= -1
             }
             o.bounceY = function() {
                 o.speedY *= -1
+            }
+            return o
+        }
+
+        let Brick = function() {
+            let image = imageFromPath('brick.png')
+            let o = {
+                image : image,
+                x : 50,
+                y : 50,
+                life : 2,
+            }
+
+            o.kill = function() {
+                o.life -= 1
+            }
+
+            o.dead = function() {
+                return o.life < 1
             }
             return o
         }
@@ -111,8 +136,10 @@
         }
 
         let collide = function(o1, o2) {
-            return !( ((o1.image.width + o1.x) < o2.x) || ((o2.image.width + o2.x) < o1.x)
-                || ((o1.image.height + o1.y) < o2.y) ||((o2.image.height + o2.y) < o1.y))
+            return !(
+                ((o1.image.width + o1.x) < o2.x) || ((o2.image.width + o2.x) < o1.x)
+                || ((o1.image.height + o1.y) < o2.y) ||((o2.image.height + o2.y) < o1.y)
+            )
         }
 
         let collideX = function(o1, o2) {
@@ -133,6 +160,7 @@
 
             let paddle = Paddle()
             let ball = Ball()
+            let brick = Brick()
 
             game.registerActions('a', function() {
                 paddle.moveLeft()
@@ -141,12 +169,16 @@
             game.registerActions('d', function() {
                 paddle.moveRight()
             })
+
+            game.registerActions('f', function() {
+                ball.fire()
+            })
             game.update = function() {
                 ball.move()
-                if (ball. x < 0 || ball.x > game.canvas.width) {
+                if (ball.x < 0 || ball.x > game.canvas.width) {
                     ball.bounceX()
                 }
-                if (ball. y < 0 || ball.y > game.canvas.height) {
+                if (ball.y < 0 || ball.y > game.canvas.height) {
                     ball.bounceY()
                 }
                 if (collideX(ball, paddle)) {
@@ -155,10 +187,26 @@
                 if (collideY(ball, paddle)) {
                     ball.bounceY()
                 }
+                if (!brick.dead()) {
+                    if (collideX(ball, brick)) {
+                        log('x', ball.x, brick.x)
+                        ball.bounceX()
+                        brick.kill()
+                    }
+
+                    if (collideY(ball, brick)) {
+                        log('y', ball.y, brick.y)
+                        ball.bounceY()
+                        brick.kill()
+                    }
+                }
             }
             game.draw = function() {
                 game.drawImage(paddle)
                 game.drawImage(ball)
+                if (!brick.dead()) {
+                    game.drawImage(brick)
+                }
             }
         }
 
