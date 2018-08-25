@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Brick Game</title>
+    <style>
+        #id-canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="id-canvas" width="400" height="300"></canvas>
+    <script>
+        let log = console.log.bind(console)
+
+        let imageFromPath = function (path) {
+            let img = new Image()
+            img.src = path
+            return img
+        }
+
+        let Paddle = function() {
+            let image = imageFromPath('paddle.png')
+            let o = {
+                image : image,
+                x : 150,
+                y : 200,
+                speed : 5,
+            }
+
+            o.moveLeft = function() {
+                o.x -= o.speed
+            }
+            o.moveRight = function() {
+                o.x += o.speed
+            }
+            return o
+        }
+
+        let Ball = function() {
+            let image = imageFromPath('ball.png')
+            let o = {
+                image : image,
+                x : 150,
+                y : 200,
+                speedX : 10,
+                speedY : 10,
+            }
+
+            o.move = function() {
+                log('move')
+                o.x += o.speedX
+                o.y += o.speedY
+            }
+
+            o.bounceX = function() {
+                o.speedX *= -1
+            }
+            o.bounceY = function() {
+                o.speedY *= -1
+            }
+            return o
+        }
+
+        let Game = function() {
+
+            let g = {
+                actions: {},
+                keyDowns: {},
+            }
+
+            g.canvas = document.querySelector('#id-canvas')
+            g.context = g.canvas.getContext('2d')
+            //event
+            window.addEventListener('keydown', function(event) {
+                g.keyDowns[event.key] = true
+            })
+            window.addEventListener('keyup', function(event) {
+                g.keyDowns[event.key] = false
+            })
+
+            g.drawImage = function(guaImage) {
+                g.context.drawImage(guaImage.image, guaImage.x, guaImage.y)
+            }
+            g.update = function() {
+
+            }
+
+            g.registerActions = function(key, callback) {
+                g.actions[key] = callback
+            }
+            // timer
+            setInterval(function() {
+
+                let keys = Object.keys(g.actions)
+                for (let i = 0; i < keys.length; i++) {
+                    let key = keys[i]
+                    if (g.keyDowns[key] === true) {
+                        g.actions[key]()
+                    }
+                }
+
+                g.update()
+
+                g.context.clearRect(0, 0, g.canvas.width, g.canvas.height)
+                g.draw()
+            }, 1000/30)
+
+            return g
+        }
+
+        let collide = function(o1, o2) {
+            return !( ((o1.image.width + o1.x) < o2.x) || ((o2.image.width + o2.x) < o1.x)
+                || ((o1.image.height + o1.y) < o2.y) ||((o2.image.height + o2.y) < o1.y))
+        }
+
+        let collideX = function(o1, o2) {
+            return (collide(o1, o2) && (
+                    ((o1.x < o2.x) && (o1.x + o1.width > o2.x)) ||
+                    ((o2.x < o1.x) && (o2.x + o2.width > o1.x))
+                )
+            )
+        }
+
+        let collideY = function(o1, o2) {
+            return collide(o1, o2) && (!collideX(o1, o2))
+        }
+
+        let __main = function() {
+
+            let game = Game()
+
+            let paddle = Paddle()
+            let ball = Ball()
+
+            game.registerActions('a', function() {
+                paddle.moveLeft()
+            })
+
+            game.registerActions('d', function() {
+                paddle.moveRight()
+            })
+            game.update = function() {
+                ball.move()
+                if (ball. x < 0 || ball.x > game.canvas.width) {
+                    ball.bounceX()
+                }
+                if (ball. y < 0 || ball.y > game.canvas.height) {
+                    ball.bounceY()
+                }
+                if (collideX(ball, paddle)) {
+                    ball.bounceX()
+                }
+                if (collideY(ball, paddle)) {
+                    ball.bounceY()
+                }
+            }
+            game.draw = function() {
+                game.drawImage(paddle)
+                game.drawImage(ball)
+            }
+        }
+
+        __main()
+    </script>
+</body>
+</html>
