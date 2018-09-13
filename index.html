@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Brick Game</title>
+    <style>
+        #id-canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="id-canvas" width="400" height="300"></canvas>
+    <script src="utils.js"></script>
+    <script src="game.js"></script>
+    <script src="ball.js"></script>
+    <script src="brick.js"></script>
+    <script src="paddle.js"></script>
+    <script>
+        let enableDebugMode = function(enabled) {
+            if (!enabled) {
+                return
+            }
+
+            window.addEventListener('keydown', function(event) {
+                if (event.key === 'p') {
+                    paused = !paused
+                }
+            })
+
+        }
+        
+        let paused = false
+
+
+        let __main = function() {
+            enableDebugMode(true)
+            let game = Game(30)
+
+            let paddle = Paddle()
+            let ball = Ball()
+            let bricks = []
+
+            for (let i = 0; i < 3; i++) {
+                let brick = Brick()
+                brick.x = 100 * i
+                bricks.push(brick)
+            }
+
+            game.registerActions('a', function() {
+                paddle.moveLeft()
+            })
+
+            game.registerActions('d', function() {
+                paddle.moveRight()
+            })
+
+            game.registerActions('f', function() {
+                ball.fire()
+            })
+            game.update = function() {
+                if (paused) {
+                    return
+                }
+                ball.move()
+                if (ball.x < 0 || ball.x > game.canvas.width) {
+                    ball.bounceX()
+                }
+                if (ball.y < 0 || ball.y > game.canvas.height) {
+                    ball.bounceY()
+                }
+                if (collideX(ball, paddle)) {
+                    ball.bounceX()
+                }
+                if (collideY(ball, paddle)) {
+                    ball.bounceY()
+                }
+                for (let i = 0; i < bricks.length; i++) {
+                    let brick = bricks[i]
+                    if (!brick.dead()) {
+                        if (collideX(ball, brick)) {
+                            log('x', ball.x, brick.x)
+                            ball.bounceX()
+                            brick.kill()
+                        }
+
+                        if (collideY(ball, brick)) {
+                            log('y', ball.y, brick.y)
+                            ball.bounceY()
+                            brick.kill()
+                        }
+                    }
+                }
+
+            }
+            game.draw = function() {
+                game.drawImage(paddle)
+                game.drawImage(ball)
+                for (let i = 0; i < bricks.length; i++) {
+                    let brick = bricks[i]
+                    if (!brick.dead()) {
+                        game.drawImage(brick)
+                    }
+                }
+
+            }
+        }
+
+        __main()
+    </script>
+</body>
+</html>
