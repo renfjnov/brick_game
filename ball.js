@@ -10,7 +10,6 @@ let Ball = function() {
     }
 
     o.move = function() {
-        log('move')
         if (o.fired) {
             o.x += o.speedX
             o.y += o.speedY

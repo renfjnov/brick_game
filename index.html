@@ -11,12 +11,21 @@
 </head>
 <body>
     <canvas id="id-canvas" width="400" height="300"></canvas>
+    <hr>
+    <input type="range" id="id-input-fps">
     <script src="utils.js"></script>
     <script src="game.js"></script>
     <script src="ball.js"></script>
     <script src="brick.js"></script>
     <script src="paddle.js"></script>
     <script>
+        let inputFps = document.querySelector('#id-input-fps')
+
+        inputFps.addEventListener('change', function() {
+            log(inputFps.value)
+            window.fps = inputFps.value
+        })
+
         let enableDebugMode = function(enabled) {
             if (!enabled) {
                 return
@@ -34,8 +43,9 @@
 
 
         let __main = function() {
+            window.fps = 30
             enableDebugMode(true)
-            let game = Game(30)
+            let game = Game()
 
             let paddle = Paddle()
             let ball = Ball()
