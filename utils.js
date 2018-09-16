@@ -24,3 +24,21 @@ let collideX = function(o1, o2) {
 let collideY = function(o1, o2) {
     return collide(o1, o2) && (!collideX(o1, o2))
 }
+
+let enableDebugMode = function(enabled) {
+    if (!enabled) {
+        return
+    }
+    // 增加暂停功能
+    window.addEventListener('keydown', function(event) {
+        if (event.key === 'p') {
+            paused = !paused
+        }
+    })
+    // 增加调整 fps 功能
+    let inputFps = document.querySelector('#id-input-fps')
+    inputFps.addEventListener('change', function() {
+    log(inputFps.value)
+    window.fps = inputFps.value
+})
+}
