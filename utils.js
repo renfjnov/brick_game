@@ -26,30 +26,3 @@ let collideY = function(o1, o2) {
 }
 
 
-
-let enableDebugMode = function(enabled) {
-    if (!enabled) {
-        return
-    }
-    // 增加暂停功能
-    window.addEventListener('keydown', function(event) {
-        if (event.key === 'p') {
-            paused = !paused
-        }
-    })
-    // 增加调整 fps 功能
-    let inputFps = document.querySelector('#id-input-fps')
-    inputFps.addEventListener('change', function() {
-        log(inputFps.value)
-        window.fps = inputFps.value
-    })
-    // 加入载入关卡功能
-    window.addEventListener('keydown', function(event){
-        let k = event.key
-        if ('1234567'.includes(k)) {
-            let n = parseInt(k) - 1
-            window.bricks = loadLevels(n)
-        }
-    })
-
-}

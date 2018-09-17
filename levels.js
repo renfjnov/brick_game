@@ -2,7 +2,7 @@
  * Created by rfj on 2018/9/17.
  */
 
-let levels = [
+const levels = [
     [
         [100, 50],
     ],
