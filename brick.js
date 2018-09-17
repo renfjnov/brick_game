@@ -5,15 +5,16 @@ let Brick = function(position) {
         image : image,
         x : p[0],
         y : p[1],
-        life : p[2] || 1,
+        alive : true,
+        lifes : p[2] || 1,
     }
 
     o.kill = function() {
-        o.life -= 1
+        o.lifes --
+        if (o.lifes < 1) {
+            o.alive = false
+        }
     }
 
-    o.dead = function() {
-        return o.life < 1
-    }
     return o
 }

@@ -107,7 +107,7 @@ let __main = function() {
         }
         for (let i = 0; i < bricks.length; i++) {
             let brick = bricks[i]
-            if (!brick.dead()) {
+            if (brick.alive) {
                 if (collideX(ball, brick)) {
                     log('x', ball.x, brick.x)
                     ball.bounceX()
@@ -128,7 +128,7 @@ let __main = function() {
         game.drawImage(ball)
         for (let i = 0; i < bricks.length; i++) {
             let brick = bricks[i]
-            if (!brick.dead()) {
+            if (brick.alive) {
                 game.drawImage(brick)
             }
         }
