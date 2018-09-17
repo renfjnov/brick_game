@@ -23,18 +23,6 @@
 
 let paused = false
 
-let loadLevels = function(n) {
-    let positions = levels[n]
-    let bricks = []
-    for (let i = 0; i < positions.length; i++) {
-        let p = positions[i]
-        let brick = Brick()
-        brick.x = p[0]
-        brick.y = p[1]
-        bricks.push(brick)
-    }
-    return bricks
-}
 
 let __main = function() {
     window.fps = 30
@@ -45,13 +33,6 @@ let __main = function() {
     let ball = Ball()
     let bricks = []
 
-    window.addEventListener('keydown', function(event){
-        let k = event.key
-        if ('1234567'.includes(k)) {
-            let n = parseInt(k) - 1
-            bricks = loadLevels(n)
-        }
-    })
     // for (let i = 0; i < 3; i++) {
     //     let brick = Brick()
     //     brick.x = 100 * i
