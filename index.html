@@ -23,10 +23,7 @@
 
 let paused = false
 
-
-let __main = function() {
-    window.fps = 30
-    let loadLevels = function(n) {
+let loadLevels = function(n) {
         let bricks = []
         log(levels)
         let positions = levels[n]
@@ -38,7 +35,7 @@ let __main = function() {
         return bricks
     }
 
-    let enableDebugMode = function(enabled) {
+let enableDebugMode = function(enabled) {
         if (!enabled) {
             return
         }
@@ -65,18 +62,18 @@ let __main = function() {
         })
 
     }
+
+let __main = function() {
+    window.fps = 30
+
+
     enableDebugMode(true)
     let game = Game()
 
     let paddle = Paddle()
     let ball = Ball()
     window.bricks = []
-    // for (let i = 0; i < 3; i++) {
-    //     let brick = Brick()
-    //     brick.x = 100 * i
-    //     bricks.push(brick)
-    // }
-
+    
     game.registerActions('a', function() {
         paddle.moveLeft()
     })
