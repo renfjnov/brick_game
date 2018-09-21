@@ -1,7 +1,6 @@
-let Paddle = function() {
-    let image = imageFromPath('paddle.png')
+let Paddle = function(game) {
     let o = {
-        image : image,
+        image : game.images.paddle,
         x : 150,
         y : 250,
         speed : 5,

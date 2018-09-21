@@ -1,8 +1,7 @@
-let Brick = function(position) {
+let Brick = function(position, game) {
     let p = position
-    let image = imageFromPath('brick.png')
     let o = {
-        image : image,
+        image : game.images.brick,
         x : p[0],
         y : p[1],
         alive : true,

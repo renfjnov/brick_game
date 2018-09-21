@@ -23,19 +23,19 @@
 
 let paused = false
 
-let loadLevels = function(n) {
+let loadLevels = function(n, game) {
         let bricks = []
         log(levels)
         let positions = levels[n]
         for (let i = 0; i < positions.length; i++) {
             let p = positions[i]
-            let brick = new Brick(p)
+            let brick = new Brick(p, game)
             bricks.push(brick)
         }
         return bricks
     }
 
-let enableDebugMode = function(enabled) {
+let enableDebugMode = function(enabled, game) {
         if (!enabled) {
             return
         }
@@ -57,7 +57,7 @@ let enableDebugMode = function(enabled) {
             if ('1234567'.includes(k)) {
                 log('1234 pressed')
                 let n = parseInt(k) - 1
-                window.bricks = loadLevels(n)
+                window.bricks = loadLevels(n, game)
             }
         })
 
@@ -66,14 +66,15 @@ let enableDebugMode = function(enabled) {
 let __main = function() {
     window.fps = 30
 
-
-    enableDebugMode(true)
     let game = Game()
 
-    let paddle = Paddle()
-    let ball = Ball()
+    enableDebugMode(true, game)
+
+    let paddle = Paddle(game)
+    let ball = Ball(game)
+    let point = 0
     window.bricks = []
-    
+
     game.registerActions('a', function() {
         paddle.moveLeft()
     })
@@ -109,12 +110,14 @@ let __main = function() {
                     log('x', ball.x, brick.x)
                     ball.bounceX()
                     brick.kill()
+                    point += 100
                 }
 
                 if (collideY(ball, brick)) {
                     log('y', ball.y, brick.y)
                     ball.bounceY()
                     brick.kill()
+                    point += 100
                 }
             }
         }
@@ -129,6 +132,7 @@ let __main = function() {
                 game.drawImage(brick)
             }
         }
+        game.drawPoint(point)
 
     }
 }

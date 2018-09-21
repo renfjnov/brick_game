@@ -1,9 +1,19 @@
-let Game = function(fps) {
-
+let Game = function(fps, images) {
+    // images 是一个对象, 存储图片的名字和路径
     let g = {
         actions: {},
         keyDowns: {},
+        images: {
+          ball: null,
+          paddle: null,
+          brick: null,
+        },
     }
+
+    g.images.ball = imageFromPath('ball.png')
+    g.images.paddle = imageFromPath('paddle.png')
+    g.images.brick = imageFromPath('brick.png')
+
 
     g.canvas = document.querySelector('#id-canvas')
     g.context = g.canvas.getContext('2d')
@@ -20,10 +30,15 @@ let Game = function(fps) {
     g.drawImage = function(guaImage) {
         g.context.drawImage(guaImage.image, guaImage.x, guaImage.y)
     }
+    g.drawPoint = function(point){
+        g.context.fillText(`得分: ${point}`, 30, 290)
+    }
     g.update = function() {
 
     }
+    g.draw = function() {
 
+    }
     g.registerActions = function(key, callback) {
         g.actions[key] = callback
     }
@@ -49,9 +64,25 @@ let Game = function(fps) {
         }, 1000 / window.fps)
     }
 
-    setTimeout(function() {
-        g.runLoop()
-    }, 1000 / window.fps)
+    g.run = function() {
+        // load 图片并保存
+        let names = Object.keys(images)
+        for (let i = 0; i < names.length; i++) {
+            let name = names[i]
+            let img = new Image()
+            img.src = images[name]
+            // g.images[name] = img
+            img.onload = function() {
+                g.images[name] = img
+            }
+        }
 
+        // 调用 runloop
+        setTimeout(function() {
+            g.runLoop()
+        }, 1000 / window.fps)
+    }
+
+    g.run()
     return g
 }

@@ -1,7 +1,6 @@
-let Ball = function() {
-    let image = imageFromPath('ball.png')
+let Ball = function(game) {
     let o = {
-        image : image,
+        image : game.images.ball,
         x : 150,
         y : 100,
         speedX : 10,
