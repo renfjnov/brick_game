@@ -1,6 +1,7 @@
 let Game = function(fps, images, runCallBack) {
     // images 是一个对象, 存储图片的名字和路径
     let g = {
+        scene:null,
         actions: {},
         keyDowns: {},
         images: {
@@ -38,10 +39,10 @@ let Game = function(fps, images, runCallBack) {
         g.context.fillText(`得分: ${point}`, 30, 290)
     }
     g.update = function() {
-
+        g.scene.update()
     }
     g.draw = function() {
-
+        g.scene.draw()
     }
     g.registerActions = function(key, callback) {
         g.actions[key] = callback

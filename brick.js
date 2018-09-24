@@ -9,7 +9,7 @@ let Brick = function(position, game) {
     let img = game.imageByName('brick')
     o.image = img.image
     o.w = img.w
-    w.h = img.h
+    o.h = img.h
     o.kill = function() {
         o.lifes --
         if (o.lifes < 1) {

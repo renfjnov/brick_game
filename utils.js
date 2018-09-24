@@ -25,4 +25,16 @@ let collideY = function(o1, o2) {
     return collide(o1, o2) && (!collideX(o1, o2))
 }
 
+let pInO = function(position, o) {
+//    p 是[x, y]格式
+    let p = position
+    return p[0] > o.x && p[0] < (o.x + o.w) && p[1] > o.y && p[1] < (o.y + o.h)
+}
+
+
+let isClicked = function(mouseDownEvent, o) {
+    let e = mouseDownEvent
+    let p = [e.offsetX, e.offsetY]
+    return pInO(p, o)
+}
 

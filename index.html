@@ -19,6 +19,7 @@
     <script src="ball.js"></script>
     <script src="brick.js"></script>
     <script src="paddle.js"></script>
+    <script src="scene.js"></script>
     <script>
 
 let paused = false
@@ -35,33 +36,48 @@ let loadLevels = function(n, game) {
         return bricks
     }
 
-let enableDebugMode = function(enabled, game) {
-        if (!enabled) {
-            return
-        }
-        // 增加暂停功能
-        window.addEventListener('keydown', function(event) {
-            if (event.key === 'p') {
-                paused = !paused
-            }
-        })
-        // 增加调整 fps 功能
-        let inputFps = document.querySelector('#id-input-fps')
-        inputFps.addEventListener('change', function() {
-            log(inputFps.value)
-            window.fps = inputFps.value
-        })
-        // 加入载入关卡功能
-        window.addEventListener('keydown', function(event){
-            let k = event.key
-            if ('1234567'.includes(k)) {
-                log('1234 pressed')
-                let n = parseInt(k) - 1
-                window.bricks = loadLevels(n, game)
-            }
-        })
-
+let enableDebugMode = function(enabled, game, ball) {
+    if (!enabled) {
+        return
     }
+    // 增加暂停功能
+    window.addEventListener('keydown', function(event) {
+        if (event.key === 'p') {
+            paused = !paused
+        }
+    })
+    // 增加调整 fps 功能
+    let inputFps = document.querySelector('#id-input-fps')
+    inputFps.addEventListener('change', function() {
+        log(inputFps.value)
+        window.fps = inputFps.value
+    })
+    // 加入载入关卡功能
+    window.addEventListener('keydown', function(event){
+        let k = event.key
+        if ('1234567'.includes(k)) {
+            log('1234 pressed')
+            let n = parseInt(k) - 1
+            window.bricks = loadLevels(n, game)
+        }
+    })
+    // 增加拖动功能
+    let clicked = false
+    game.canvas.addEventListener('mousedown', function(event) {
+        if(isClicked(event, ball)) {
+            clicked = true
+        }
+    })
+    game.canvas.addEventListener('mousemove', function(event) {
+        if (clicked) {
+            ball.x = event.offsetX
+            ball.y = event.offsetY
+        }
+    })
+    game.canvas.addEventListener('mouseup', function(event) {
+        clicked = false
+    })
+}
 
 let __main = function() {
     window.fps = 30
@@ -71,69 +87,8 @@ let __main = function() {
         paddle: 'paddle.png',
     }
     let game = Game(window.fps, images, function (g) {
-
-        enableDebugMode(true, game)
-
-        let paddle = Paddle(game)
-        let ball = Ball(game)
-        window.bricks = loadLevels(1, game)
-        log('回调中的 g.images',g.images, ball, paddle, bricks)
-        let point = 0
-
-        game.registerActions('a', function () {
-            paddle.moveLeft()
-        })
-
-        game.registerActions('d', function () {
-            paddle.moveRight()
-        })
-
-        game.registerActions('f', function () {
-            ball.fire()
-        })
-        game.update = function () {
-            if (paused) {
-                return
-            }
-            ball.move()
-            if (collideX(ball, paddle)) {
-                ball.bounceX()
-            }
-            if (collideY(ball, paddle)) {
-                ball.bounceY()
-            }
-            for (let i = 0; i < bricks.length; i++) {
-                let brick = bricks[i]
-                if (brick.alive) {
-                    if (collideX(ball, brick)) {
-                        log('x', ball.x, brick.x)
-                        ball.bounceX()
-                        brick.kill()
-                        point += 100
-                    }
-
-                    if (collideY(ball, brick)) {
-                        log('y', ball.y, brick.y)
-                        ball.bounceY()
-                        brick.kill()
-                        point += 100
-                    }
-                }
-            }
-
-        }
-        game.draw = function () {
-            game.drawImage(paddle)
-            game.drawImage(ball)
-            for (let i = 0; i < bricks.length; i++) {
-                let brick = bricks[i]
-                if (brick.alive) {
-                    game.drawImage(brick)
-                }
-            }
-            game.drawPoint(point)
-
-        }
+        let scene = Scene(g)
+        g.scene = scene
     })
 }
 
