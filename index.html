@@ -65,76 +65,76 @@ let enableDebugMode = function(enabled, game) {
 
 let __main = function() {
     window.fps = 30
+    let images = {
+        brick: 'brick.png',
+        ball: 'ball.png',
+        paddle: 'paddle.png',
+    }
+    let game = Game(window.fps, images, function (g) {
 
-    let game = Game()
+        enableDebugMode(true, game)
 
-    enableDebugMode(true, game)
+        let paddle = Paddle(game)
+        let ball = Ball(game)
+        window.bricks = loadLevels(1, game)
+        log('回调中的 g.images',g.images, ball, paddle, bricks)
+        let point = 0
 
-    let paddle = Paddle(game)
-    let ball = Ball(game)
-    let point = 0
-    window.bricks = []
+        game.registerActions('a', function () {
+            paddle.moveLeft()
+        })
 
-    game.registerActions('a', function() {
-        paddle.moveLeft()
-    })
+        game.registerActions('d', function () {
+            paddle.moveRight()
+        })
 
-    game.registerActions('d', function() {
-        paddle.moveRight()
-    })
+        game.registerActions('f', function () {
+            ball.fire()
+        })
+        game.update = function () {
+            if (paused) {
+                return
+            }
+            ball.move()
+            if (collideX(ball, paddle)) {
+                ball.bounceX()
+            }
+            if (collideY(ball, paddle)) {
+                ball.bounceY()
+            }
+            for (let i = 0; i < bricks.length; i++) {
+                let brick = bricks[i]
+                if (brick.alive) {
+                    if (collideX(ball, brick)) {
+                        log('x', ball.x, brick.x)
+                        ball.bounceX()
+                        brick.kill()
+                        point += 100
+                    }
 
-    game.registerActions('f', function() {
-        ball.fire()
-    })
-    game.update = function() {
-        if (paused) {
-            return
-        }
-        ball.move()
-        if (ball.x < 0 || ball.x > game.canvas.width) {
-            ball.bounceX()
-        }
-        if (ball.y < 0 || ball.y > game.canvas.height) {
-            ball.bounceY()
-        }
-        if (collideX(ball, paddle)) {
-            ball.bounceX()
-        }
-        if (collideY(ball, paddle)) {
-            ball.bounceY()
-        }
-        for (let i = 0; i < bricks.length; i++) {
-            let brick = bricks[i]
-            if (brick.alive) {
-                if (collideX(ball, brick)) {
-                    log('x', ball.x, brick.x)
-                    ball.bounceX()
-                    brick.kill()
-                    point += 100
-                }
-
-                if (collideY(ball, brick)) {
-                    log('y', ball.y, brick.y)
-                    ball.bounceY()
-                    brick.kill()
-                    point += 100
+                    if (collideY(ball, brick)) {
+                        log('y', ball.y, brick.y)
+                        ball.bounceY()
+                        brick.kill()
+                        point += 100
+                    }
                 }
             }
-        }
 
-    }
-    game.draw = function() {
-        game.drawImage(paddle)
-        game.drawImage(ball)
-        for (let i = 0; i < bricks.length; i++) {
-            let brick = bricks[i]
-            if (brick.alive) {
-                game.drawImage(brick)
+        }
+        game.draw = function () {
+            game.drawImage(paddle)
+            game.drawImage(ball)
+            for (let i = 0; i < bricks.length; i++) {
+                let brick = bricks[i]
+                if (brick.alive) {
+                    game.drawImage(brick)
+                }
             }
-        }
-        game.drawPoint(point)
+            game.drawPoint(point)
 
-    }
+        }
+    })
 }
 
         __main()

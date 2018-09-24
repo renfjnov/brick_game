@@ -1,14 +1,19 @@
 let Ball = function(game) {
-    let o = {
-        image : game.images.ball,
-        x : 150,
-        y : 100,
-        speedX : 10,
-        speedY : 10,
-        fired : false,
-    }
+    let o = game.imageByName('ball')
+    o.x = 150
+    o.y = 100
+    o.speedX = 10
+    o.speedY = 10
+    o.fired = false
 
     o.move = function() {
+
+        if (o.x < 0 || o.x > game.canvas.width) {
+            o.bounceX()
+        }
+        if (o.y < 0 || o.y > game.canvas.height) {
+            o.bounceY()
+        }
         if (o.fired) {
             o.x += o.speedX
             o.y += o.speedY

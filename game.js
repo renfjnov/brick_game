@@ -1,4 +1,4 @@
-let Game = function(fps, images) {
+let Game = function(fps, images, runCallBack) {
     // images 是一个对象, 存储图片的名字和路径
     let g = {
         actions: {},
@@ -10,14 +10,18 @@ let Game = function(fps, images) {
         },
     }
 
-    g.images.ball = imageFromPath('ball.png')
-    g.images.paddle = imageFromPath('paddle.png')
-    g.images.brick = imageFromPath('brick.png')
-
-
     g.canvas = document.querySelector('#id-canvas')
     g.context = g.canvas.getContext('2d')
     //event
+    g.imageByName = function(name) {
+        let img = g.images[name]
+        let image = {
+            w: img.width,
+            h: img.height,
+            image: img,
+        }
+        return image
+    }
     window.addEventListener('keydown', function(event) {
         g.keyDowns[event.key] = true
     })
@@ -66,7 +70,9 @@ let Game = function(fps, images) {
 
     g.run = function() {
         // load 图片并保存
-        let names = Object.keys(images)
+        let loads = []
+        let names = Object.keys(g.images)
+        log(names)
         for (let i = 0; i < names.length; i++) {
             let name = names[i]
             let img = new Image()
@@ -74,13 +80,18 @@ let Game = function(fps, images) {
             // g.images[name] = img
             img.onload = function() {
                 g.images[name] = img
+                loads.push(1)
+                log(loads)
+                if (loads.length === names.length) {
+                    setTimeout(function() {
+                        log('回调之前的 g.images', g.images)
+                        runCallBack(g)
+                        g.runLoop()
+                    }, 1000 / window.fps)
+                }
             }
         }
 
-        // 调用 runloop
-        setTimeout(function() {
-            g.runLoop()
-        }, 1000 / window.fps)
     }
 
     g.run()

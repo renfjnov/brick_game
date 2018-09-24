@@ -1,11 +1,13 @@
 let Paddle = function(game) {
     let o = {
-        image : game.images.paddle,
         x : 150,
         y : 250,
         speed : 5,
     }
-
+    let img = game.imageByName('paddle')
+    o.image = img.image
+    o.w = img.w
+    o.h = img.h
     o.move = function(x) {
         if (x < 0) {
             x = 0
