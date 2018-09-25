@@ -7,7 +7,7 @@ var SceneEnd = function(game) {
         game: game,
     }
     s.draw = function() {
-        game.drawPoint('游戏结束')
+        game.context.fillText(`游戏结束, 按 r 返回标题界面`, 150, 150)
     }
     s.update = function() {
     }
