@@ -64,6 +64,11 @@ var Scene = function(game) {
                 }
             }
         }
+    //    游戏结束
+        if (ball.y > paddle.y) {
+            s = SceneEnd(game)
+            game.replaceScene(s)
+        }
     }
     return s
 }
