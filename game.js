@@ -5,9 +5,13 @@ let Game = function(fps, images, runCallBack) {
         actions: {},
         keyDowns: {},
         images: {
-          ball: null,
-          paddle: null,
-          brick: null,
+            ball: null,
+            paddle: null,
+            brick_1: null,
+            brick_2: null,
+            save_button: null,
+            editor_button: null,
+            start_button: null,
         },
     }
 
@@ -15,13 +19,7 @@ let Game = function(fps, images, runCallBack) {
     g.context = g.canvas.getContext('2d')
     //event
     g.imageByName = function(name) {
-        let img = g.images[name]
-        let image = {
-            w: img.width,
-            h: img.height,
-            image: img,
-        }
-        return image
+        return g.images[name]
     }
     window.addEventListener('keydown', function(event) {
         g.keyDowns[event.key] = true
@@ -32,11 +30,11 @@ let Game = function(fps, images, runCallBack) {
     g.clearCanvas = function() {
         g.context.clearRect(0, 0, g.canvas.width, g.canvas.height)
     }
-    g.drawImage = function(guaImage) {
-        g.context.drawImage(guaImage.image, guaImage.x, guaImage.y)
+    g.drawImage = function(o) {
+        g.context.drawImage(o.image, o.x, o.y)
     }
-    g.drawPoint = function(point){
-        g.context.fillText(`得分: ${point}`, 30, 290)
+    g.drawText = function(text, x=30, y =290){
+        g.context.fillText(text, x, y)
     }
     g.update = function() {
         g.scene.update()
@@ -75,7 +73,7 @@ let Game = function(fps, images, runCallBack) {
         // load 图片并保存
         let loads = []
         let names = Object.keys(g.images)
-        log(names)
+        // log(names)
         for (let i = 0; i < names.length; i++) {
             let name = names[i]
             let img = new Image()
@@ -84,10 +82,10 @@ let Game = function(fps, images, runCallBack) {
             img.onload = function() {
                 g.images[name] = img
                 loads.push(1)
-                log(loads)
+                // log(loads)
                 if (loads.length === names.length) {
                     setTimeout(function() {
-                        log('回调之前的 g.images', g.images)
+                        // log('回调之前的 g.images', g.images)
                         runCallBack(g)
                         g.runLoop()
                     }, 1000 / window.fps)
