@@ -4,6 +4,7 @@
 
 class Scene {
     constructor(game) {
+        this.active = true
         this.game = game
         this.elements = []
         this.init()
@@ -43,5 +44,8 @@ class Scene {
             }
         }
         this.elements = result
+    }
+    destroy() {
+        this.active = false
     }
 }

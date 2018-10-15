@@ -3,6 +3,9 @@ class SceneEnd extends Scene {
     init() {
         let self = this
         this.game.registerActions('r', function() {
+            if (!self.active) {
+                return
+            }
             let s = new SceneTitle(self.game)
             self.game.replaceScene(s)
         })

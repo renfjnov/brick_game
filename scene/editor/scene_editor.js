@@ -32,6 +32,9 @@ class SceneEditor extends Scene {
         let self = this
 
         game.canvas.addEventListener('mousedown', function(event) {
+            if (!self.active) {
+                return
+            }
             if (isClicked(event, self.baseBrick1)) {
                 newBrick = new Brick(self.basePosition1, game)
                 self.elements.push(newBrick)
@@ -48,12 +51,18 @@ class SceneEditor extends Scene {
             }
         })
         game.canvas.addEventListener('mousemove', function(event) {
+            if (!self.active) {
+                return
+            }
             if (newBrick && enableDrag) {
                 newBrick.x = event.offsetX
                 newBrick.y = event.offsetY
             }
         })
         game.canvas.addEventListener('mouseup', function(event) {
+            if (!self.active) {
+                return
+            }
             enableDrag = false
             if (newBrick && newBrick.y < 200) {
                 newBrick = null
