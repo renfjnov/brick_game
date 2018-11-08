@@ -49,7 +49,6 @@ let Game = function(fps, images, runCallBack) {
     // 在 setTimeout 中: 1. 响应按键, 2. 更新状态 3. 清空 convas 并重新画图, 4. 调用函数进行下一轮循环
     g.replaceScene = function(scene) {
         g.scene.destroy()
-        g.actions = {}
         log(g.scene.active)
         g.scene = scene
     }
